@@ -16,7 +16,7 @@ public class Game {
 		int random1, random2;
 		Random random = new Random();
 
-		while (counter < util.Arguments.numberCellsDisplayed) {
+		while (counter < util.Arguments.NUMBER_CELLS_DISPLAYED) {
 			random1 = random.nextInt(9);
 			random2 = random.nextInt(9);
 

@@ -1,6 +1,10 @@
 package game;
 
 public class Board {
+	
+	public Double fitness = 0.0;
+	
+	public int conflicts = 0;
 
 	public int[][] grid = { 
 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -25,6 +29,8 @@ public class Board {
 			{true, true, true, true, true, true, true, true, true},
 			{true, true, true, true, true, true, true, true, true}
 	};
+	
+	
 
 
 	public void printBoard() {
