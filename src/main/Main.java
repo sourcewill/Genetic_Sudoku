@@ -17,9 +17,9 @@ public class Main {
 		genetic.populationFitness();
 		genetic.populattionProbability();
 		genetic.rouletteSelection();
+		genetic.newGeneration();
 		
-		
-		for(Board b : genetic.selectedPopulation) {
+		for(Board b : genetic.population) {
 			b.printBoard();
 			System.out.println("FIT: " + b.fitness);
 			System.out.println("Conflicts: " + b.conflicts);

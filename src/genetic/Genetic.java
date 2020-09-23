@@ -14,8 +14,10 @@ public class Genetic {
 
 	public List<Board> population = new ArrayList<>();
 	public List<Board> selectedPopulation = new ArrayList<>();
+	public List<Board> elitePopulation = new ArrayList<>();
 	private Board boardToSolve;
 	private Double populationFitnessSum = 0.0;
+	public int generation = 1;
 
 	public Genetic(Board boardToSolve) {
 		this.boardToSolve = boardToSolve;
@@ -23,10 +25,13 @@ public class Genetic {
 
 	public void initializePopulation() {
 
-		for (int i = 0; i < util.Arguments.POPULATION_SIZE; i++) {
+		for (int i = 0; i < util.Arguments.POPULATION_SIZE - 1; i++) {
 			Board newBoard = initializeRandomBoard();
 			population.add(newBoard);
 		}
+		Board test = new Board();
+		test.grid = util.CompletedGrids.getCompletedGrid();
+		population.add(test);
 
 	}
 
@@ -59,18 +64,21 @@ public class Genetic {
 			board.fitness = fitness;
 			populationFitnessSum += fitness;
 		}
+		Collections.sort(population); // Orders the population based on fitness
+		elitePopulation = new ArrayList<Board>();
+		for (int i = 0; i < util.Arguments.ELITE_POPULATION; i++) {
+			elitePopulation.add(population.get(i));
+		}
 	}
 
-	public Double calculateFitness(Board board) {
+	private Double calculateFitness(Board board) {
 		int conflicts = Game.verifyBoardConflicts(board);
 		board.conflicts = conflicts;
 		return (double) (1 - (conflicts / util.Arguments.LIMIT_CONFLICTS_FITNESS));
 	}
 
-	public Double calculateProbability(Board board) {
-		Double probability;
-		probability = (100.0 * board.fitness / populationFitnessSum) / 100.0;
-		return probability;
+	private Double calculateProbability(Board board) {
+		return board.fitness / populationFitnessSum;
 	}
 
 	public void populattionProbability() {
@@ -82,7 +90,7 @@ public class Genetic {
 		}
 	}
 
-	public Board spinRoulette() {
+	private Board spinRoulette() {
 
 		Random randomGenerator = new Random();
 		Double random = randomGenerator.nextDouble();
@@ -97,17 +105,94 @@ public class Genetic {
 	public void rouletteSelection() {
 
 		Set<Board> set = new HashSet<Board>();
+		set.addAll(elitePopulation);
 
-		Collections.sort(population); // Orders the population based on fitness
-		for (int i = 0; i < util.Arguments.ELITE_POPULATION; i++) {
-			set.add(population.get(i));
-		}
-
-		while (set.size() < util.Arguments.SELECTED_POPULATION) {
+		while (set.size() < util.Arguments.SELECTED_POPULATION_SIZE) {
 			set.add(spinRoulette());
 		}
 		selectedPopulation = new ArrayList<Board>();
 		selectedPopulation.addAll(set);
+	}
+
+	public Board crossover(Board board1, Board board2) {
+
+		Random randomGenerator = new Random();
+		int lineOrColumn, cut;
+
+		lineOrColumn = randomGenerator.nextInt(2); // Cut in line or cut in column
+		cut = randomGenerator.nextInt(8) + 1; // Random between 1 and 8
+		Board board = new Board();
+		board.editable = board1.editable;
+
+		System.out.println(lineOrColumn + "--> Cut: " + cut);
+
+		switch (lineOrColumn) {
+
+		case 0:
+			for (int i = 0; i < cut; i++) {
+				for (int j = 0; j < 9; j++) {
+					board.grid[i][j] = board1.grid[i][j];
+				}
+			}
+			for (int i = cut; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
+					board.grid[i][j] = board2.grid[i][j];
+				}
+			}
+			break;
+
+		case 1:
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < cut; j++) {
+					board.grid[i][j] = board1.grid[i][j];
+				}
+			}
+			for (int i = 0; i < 9; i++) {
+				for (int j = cut; j < 9; j++) {
+					board.grid[i][j] = board2.grid[i][j];
+				}
+			}
+			break;
+		}
+
+		return board;
+	}
+
+	public Board mutation(Board board) {
+
+		Random randomGenerator = new Random();
+		int i, j, number;
+
+		i = randomGenerator.nextInt(9);
+		j = randomGenerator.nextInt(9);
+		number = randomGenerator.nextInt(9) + 1;
+
+		board.grid[i][j] = number;
+		return board;
+	}
+
+	public void newGeneration() {
+
+		this.generation++;
+		this.population = new ArrayList<Board>();
+		Random randomGenerator = new Random();
+
+		while (population.size() < util.Arguments.POPULATION_SIZE) {
+
+			int i = randomGenerator.nextInt(util.Arguments.SELECTED_POPULATION_SIZE);
+			int j = randomGenerator.nextInt(util.Arguments.SELECTED_POPULATION_SIZE);
+			if (i == j) {
+				continue;
+			}
+
+			Board board = crossover(selectedPopulation.get(i), selectedPopulation.get(j));
+
+			Double mutation = randomGenerator.nextDouble();
+			if (mutation <= util.Arguments.MUTATION_RATE / 100) {
+				mutation(board);
+			}
+			population.add(board);
+		}
 	}
 
 }
