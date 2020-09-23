@@ -14,12 +14,19 @@ public class Main {
 		
 		Genetic genetic = new Genetic(board);
 		genetic.initializePopulation();
-		genetic.PopulationFitness();
-		for(Board b : genetic.getPopulation()) {
+		genetic.populationFitness();
+		genetic.populattionProbability();
+		genetic.rouletteSelection();
+		
+		
+		for(Board b : genetic.selectedPopulation) {
 			b.printBoard();
-			System.out.println(b.fitness);
-			System.out.println(b.conflicts);
+			System.out.println("FIT: " + b.fitness);
+			System.out.println("Conflicts: " + b.conflicts);
+			System.out.println(b.rouletteStart);
+			System.out.println(b.rouletteEnd);
 		}
+		
 	}
 
 }

@@ -1,12 +1,13 @@
 package game;
 
-public class Board {
+public class Board implements Comparable<Board>{
 	
-	public Double fitness = 0.0;
-	
+	public Double fitness = 0.0;	
 	public int conflicts = 0;
+	public Double rouletteStart;
+	public Double rouletteEnd;
 
-	public int[][] grid = { 
+	public int[][] grid = {
 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -51,7 +52,14 @@ public class Board {
 		System.out.println(" ------+-------+------");
 		System.out.println();
 	}
-	
+
+
+
+
+	@Override
+	public int compareTo(Board otherBoard) {
+		return otherBoard.fitness.compareTo(this.fitness);
+	}
 	
 
 }
