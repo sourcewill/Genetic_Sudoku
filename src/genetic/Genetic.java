@@ -13,11 +13,13 @@ import game.Game;
 public class Genetic {
 
 	public List<Board> population = new ArrayList<>();
-	public List<Board> selectedPopulation = new ArrayList<>();
+	public List<Board> selectedPopulation;
 	public List<Board> elitePopulation = new ArrayList<>();
-	private Board boardToSolve;
+	private Board boardToSolve;	
 	private Double populationFitnessSum = 0.0;
 	public int generation = 1;
+	
+	public Board bestSolution = new Board();
 
 	public Genetic(Board boardToSolve) {
 		this.boardToSolve = boardToSolve;
@@ -25,13 +27,15 @@ public class Genetic {
 
 	public void initializePopulation() {
 
-		for (int i = 0; i < util.Arguments.POPULATION_SIZE - 1; i++) {
+		for (int i = 0; i < util.Arguments.POPULATION_SIZE; i++) {
 			Board newBoard = initializeRandomBoard();
 			population.add(newBoard);
 		}
-		Board test = new Board();
+		/*Board test = new Board();
 		test.grid = util.CompletedGrids.getCompletedGrid();
-		population.add(test);
+		population.add(test);*/
+		
+		bestSolution.conflicts = Integer.MAX_VALUE;
 
 	}
 
@@ -60,6 +64,7 @@ public class Genetic {
 
 	public void populationFitness() {
 		for (Board board : population) {
+			
 			Double fitness = calculateFitness(board);
 			board.fitness = fitness;
 			populationFitnessSum += fitness;
@@ -74,6 +79,9 @@ public class Genetic {
 	private Double calculateFitness(Board board) {
 		int conflicts = Game.verifyBoardConflicts(board);
 		board.conflicts = conflicts;
+		if(conflicts < bestSolution.conflicts) {
+			bestSolution = board;
+		}
 		return (double) (1 - (conflicts / util.Arguments.LIMIT_CONFLICTS_FITNESS));
 	}
 
@@ -108,13 +116,17 @@ public class Genetic {
 		set.addAll(elitePopulation);
 
 		while (set.size() < util.Arguments.SELECTED_POPULATION_SIZE) {
-			set.add(spinRoulette());
+			Board board = spinRoulette();
+			if(board != null) {
+				set.add(board);
+			}
 		}
 		selectedPopulation = new ArrayList<Board>();
 		selectedPopulation.addAll(set);
 	}
 
 	public Board crossover(Board board1, Board board2) {
+		
 
 		Random randomGenerator = new Random();
 		int lineOrColumn, cut;
@@ -122,9 +134,6 @@ public class Genetic {
 		lineOrColumn = randomGenerator.nextInt(2); // Cut in line or cut in column
 		cut = randomGenerator.nextInt(8) + 1; // Random between 1 and 8
 		Board board = new Board();
-		board.editable = board1.editable;
-
-		System.out.println(lineOrColumn + "--> Cut: " + cut);
 
 		switch (lineOrColumn) {
 
@@ -192,6 +201,22 @@ public class Genetic {
 				mutation(board);
 			}
 			population.add(board);
+		}
+	}
+	
+	public void printPopulation() {
+		for(Board board : population) {
+			board.printBoard();
+			System.out.println(board.conflicts);
+			System.out.println(board.fitness);
+		}
+	}
+	
+	public void printSelectedPopulation() {
+		for(Board board : selectedPopulation) {
+			board.printBoard();
+			System.out.println(board.conflicts);
+			System.out.println(board.fitness);
 		}
 	}
 
