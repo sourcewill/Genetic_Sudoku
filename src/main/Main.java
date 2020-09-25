@@ -18,12 +18,22 @@ public class Main {
 		while(genetic.generation < util.Arguments.NUMBER_GENERATIONS) {			
 			genetic.populationFitness();
 			genetic.populattionProbability();
-			System.out.println("Gen: " + genetic.generation + " | Best conflicts: " + genetic.bestSolution.conflicts);
+			
+			System.out.println("Generation: " + genetic.generation 
+					+ "\nBest fitness: " + genetic.bestSolution.fitness 
+					+ "\nFitness average: " + genetic.calculatePopulationFitnessAverage()
+					+ "\nConflicts: " + genetic.bestSolution.conflicts + "\n");
+			
+			if(genetic.bestSolution.conflicts == 0) {
+				System.out.println("SOLVED!");
+				break;
+			}
 			genetic.rouletteSelection();
 			genetic.newGeneration();
 			
 		}
 		
+		System.out.println("BEST SOLUTION");
 		genetic.bestSolution.printBoard();
 	}
 
