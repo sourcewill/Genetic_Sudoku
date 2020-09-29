@@ -12,8 +12,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) {		
+		
 		launch(args);
 	}
 
@@ -36,7 +36,9 @@ public class Main extends Application {
 		XYChart.Series averagrFitnessLine = new XYChart.Series();
 		averagrFitnessLine.setName("Average fitness");
 
-		Board board = Game.generateBoard();
+		Board board = util.CompletedGrids.getHardBoard();
+		util.Arguments.NUMBER_CELLS_DISPLAYED = board.displayedCells;
+		
 		System.out.println("INITIAL BOARD TO SOLVE:");
 		board.printBoard();
 

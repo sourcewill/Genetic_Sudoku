@@ -4,8 +4,10 @@ public class Board implements Comparable<Board>{
 	
 	public Double fitness = 0.0;	
 	public int conflicts = 0;
+	public int displayedCells;
 	public Double rouletteStart;
 	public Double rouletteEnd;
+	
 
 	public int[][] grid = {
 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0 },

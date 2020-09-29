@@ -84,7 +84,7 @@ public class Genetic {
 		if (conflicts < bestSolution.conflicts) {
 			bestSolution = board;
 		}
-		return (double) (1.0 - (conflicts / util.Arguments.LIMIT_CONFLICTS_FITNESS));
+		return (double) (1.0 - (conflicts / (243.0 - (util.Arguments.NUMBER_CELLS_DISPLAYED * 3.0))));
 	}
 
 	private Double calculateProbability(Board board) {
@@ -220,6 +220,9 @@ public class Genetic {
 
 		this.generation++;
 		this.population = new ArrayList<Board>();
+		
+		//population.addAll(elitePopulation);
+		
 		Random randomGenerator = new Random();
 
 		while (population.size() < util.Arguments.POPULATION_SIZE) {

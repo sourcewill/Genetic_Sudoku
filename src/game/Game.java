@@ -71,7 +71,10 @@ public static boolean verifyBoardSolved(Board board) {
 			}
 
 		}
-		return conflicts;
+		if(conflicts > 0) {
+			return conflicts+1;
+		}
+		return 0;
 	}
 
 	public static int verifyColumnConflicts(int columnNumber, Board board) {
@@ -88,19 +91,23 @@ public static boolean verifyBoardSolved(Board board) {
 			}
 
 		}
-		return conflicts;
+		if(conflicts > 0) {
+			return conflicts+1;
+		}
+		return 0;
 	}
 
 	public static int verifySubBoardConflicts(Board board) {
 		
-		int conflicts = 0;
+		int conflicts = 0, subconflicts;
 		int[][] grid = board.grid;
 		
 		for (int row = 0; row < 9; row = row + 3) {
 			for (int col = 0; col < 9; col = col + 3) {
 
 				Set<Integer> set = new HashSet<Integer>();
-
+				subconflicts = conflicts;
+				
 				for (int r = row; r < row + 3; r++) {
 					for (int c = col; c < col + 3; c++) {
 
@@ -110,6 +117,9 @@ public static boolean verifyBoardSolved(Board board) {
 							}
 						}
 					}
+				}
+				if(subconflicts != conflicts) {
+					conflicts++;
 				}
 			}
 		}
