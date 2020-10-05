@@ -1,5 +1,7 @@
 package main;
 
+import java.io.IOException;
+
 import game.Board;
 import game.Game;
 import genetic.Genetic;
@@ -12,8 +14,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	public static void main(String[] args) {		
-		
+	public static void main(String[] args) throws IOException {		
+		util.Arguments.readArguments("argumentos_entrada.txt");
 		launch(args);
 	}
 
@@ -34,10 +36,24 @@ public class Main extends Application {
 		XYChart.Series bestFitnessLine = new XYChart.Series();
 		bestFitnessLine.setName("Best Fitness");
 		XYChart.Series averagrFitnessLine = new XYChart.Series();
-		averagrFitnessLine.setName("Average fitness");
+		averagrFitnessLine.setName("Average population fitness");
 
-		Board board = util.CompletedGrids.getHardBoard();
-		util.Arguments.NUMBER_CELLS_DISPLAYED = board.displayedCells;
+		Board board = null;
+		
+		switch(util.Arguments.DIFFICULTY_LEVEL) {
+			case 1:
+				board = util.GridsToSolve.getEasyBoard();
+				break;
+			case 2:
+				board = util.GridsToSolve.getMediumBoard();
+				break;
+			case 3:
+				board = util.GridsToSolve.getHardBoard();
+				break;
+			default:
+				System.out.println("[Erro] Argumento DIFFICULTY_LEVEL inválido.");
+				System.exit(-1);
+		}
 		
 		System.out.println("INITIAL BOARD TO SOLVE:");
 		board.printBoard();
@@ -50,7 +66,7 @@ public class Main extends Application {
 			genetic.populattionProbability();
 
 			System.out.println("Generation: " + genetic.generation + "\nBest fitness: " + genetic.bestSolution.fitness
-					+ "\nFitness average: " + genetic.calculatePopulationFitnessAverage() + "\nConflicts: "
+					+ "\nFitness average: " + genetic.calculatePopulationFitnessAverage() + "\nConflicts best solution: "
 					+ genetic.bestSolution.conflicts + "\n");
 
 			bestFitnessLine.getData().add(new XYChart.Data(genetic.generation, genetic.bestSolution.fitness));

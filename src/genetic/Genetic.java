@@ -84,7 +84,7 @@ public class Genetic {
 		if (conflicts < bestSolution.conflicts) {
 			bestSolution = board;
 		}
-		return (double) (1.0 - (conflicts / (243.0 - (util.Arguments.NUMBER_CELLS_DISPLAYED * 3.0))));
+		return (double) (1.0 - (conflicts /  ((81.0 - boardToSolve.displayedCells) * 3.0)) );
 	}
 
 	private Double calculateProbability(Board board) {
@@ -92,7 +92,7 @@ public class Genetic {
 	}
 
 	public Double calculatePopulationFitnessAverage() {
-		return populationFitnessSum / util.Arguments.POPULATION_SIZE;
+		return populationFitnessSum / (double) util.Arguments.POPULATION_SIZE;
 	}
 
 	public void populattionProbability() {
@@ -171,28 +171,6 @@ public class Genetic {
 				for (int j = cutPosition; j < 9; j++) {
 					board.grid[i][j] = board2.grid[i][j];
 				}
-			}
-			break;
-		case 2:
-			for (int i = 0; i < 9; i++) {
-				for (int j = 0; j < 9; j++) {
-					board.grid[i][j] = board1.grid[i][j];
-				}
-			}
-			for (int i = 0; i < 9; i++) {
-				board.grid[cutPosition][i] = board1.grid[cutPosition][i];
-
-			}
-			break;
-		case 3:
-			for (int i = 0; i < 9; i++) {
-				for (int j = 0; j < 9; j++) {
-					board.grid[i][j] = board1.grid[i][j];
-				}
-			}
-			for (int i = 0; i < 9; i++) {
-				board.grid[i][cutPosition] = board1.grid[i][cutPosition];
-
 			}
 			break;
 		}

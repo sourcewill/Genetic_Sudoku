@@ -1,36 +1,11 @@
 package game;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
-import util.CompletedGrids;
-
 public class Game {
-
-	public static Board generateBoard() {
-
-		int gridCompleted[][] = CompletedGrids.getCompletedGrid();
-		Board board = new Board();
-		int counter = 0;
-		int random1, random2;
-		Random random = new Random();
-
-		while (counter < util.Arguments.NUMBER_CELLS_DISPLAYED) {
-			random1 = random.nextInt(9);
-			random2 = random.nextInt(9);
-
-			if (board.editable[random1][random2]) {
-				board.grid[random1][random2] = gridCompleted[random1][random2];
-				board.editable[random1][random2] = false;
-				counter++;
-			}
-		}
-
-		return board;
-	}
 	
-public static boolean verifyBoardSolved(Board board) {
+	public static boolean verifyBoardSolved(Board board) {
 		
 		int [][] grid = board.grid;
 		
